@@ -26,6 +26,11 @@ namespace project_management_system_backend.Repostories
             var payment = _context.payments.Where(x => x.ProjectId == ProjectId).ToList();
             return payment;
         }
+        public async Task<List<Payment>> GetPaymentByProjectId(int ProjectId)
+        {
+            var payment = _context.payment.Where(x => x.ProjectId == ProjectId).ToList();
+            return payment;
+        }
         public async Task<Payment> CreatePayment(Payment payment)
         {
             _context.payments.Add(payment);

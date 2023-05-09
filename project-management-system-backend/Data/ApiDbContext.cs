@@ -25,6 +25,5 @@ namespace project_management_system_backend.Data
         public DbSet<Assignment> assignment { get; set; }
         public DbSet<ClientCompany> clientCompany { get; set; }
         public DbSet<Invoice> invoice { get; set; }
-
     }
 }
