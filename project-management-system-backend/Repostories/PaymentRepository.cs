@@ -7,6 +7,8 @@ namespace project_management_system_backend.Repostories
     {
         private readonly ApiDbContext _context;
 
+        public object GetBudgetByProjectId { get; private set; }
+
         public PaymentRepository(ApiDbContext context)
         {
             _context = context;
@@ -16,7 +18,7 @@ namespace project_management_system_backend.Repostories
             var paymentList = _context.payments.ToList();
             return paymentList;
         }
-        public async Task<Payment> GetPaymentById(string Id)
+        public async Task<Payment> GetPaymentById(int Id)
         {
             var payment = _context.payments.Where(x => x.Id == Id).FirstOrDefault();
             return payment;
@@ -26,11 +28,29 @@ namespace project_management_system_backend.Repostories
             var payment = _context.payments.Where(x => x.ProjectId == ProjectId).ToList();
             return payment;
         }
+        public async Task<List<Payment>> GetPaymentByProjectId(int ProjectId)
+        {
+            var payment = _context.payment.Where(x => x.ProjectId == ProjectId).ToList();
+            return payment;
+        }
         public async Task<Payment> CreatePayment(Payment payment)
         {
-            _context.payments.Add(payment);
-            _context.SaveChanges();
+
+            var budgetToUpdate = _context.budget.Where(x => x.ProjectId == payment.ProjectId).FirstOrDefault();
+            if (budgetToUpdate != null && payment.amount <= budgetToUpdate.yetToReceive)
+            {
+                    _context.payment.Add(payment);
+                    budgetToUpdate.Received += payment.amount;
+                    budgetToUpdate.yetToReceive -= payment.amount;
+                    _context.budget.Update(budgetToUpdate);
+                    _context.SaveChanges();
+            }
+            else
+            {
+                throw new Exception();
+            }
             return payment;
+
         }
         
         public async Task<Payment> Updatepayment(Payment payment)

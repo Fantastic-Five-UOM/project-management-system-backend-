@@ -31,6 +31,5 @@ namespace project_management_system_backend.Data
         //public object Documents { get; internal set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Client> Clients { get; set; }
-
     }
 }
